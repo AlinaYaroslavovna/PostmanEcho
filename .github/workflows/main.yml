@@ -1,0 +1,39 @@
+name: Java REST Assured Tests (Gradle)
+
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: 'gradle' 
+
+   
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew
+
+    - name: Build and Run Tests with Gradle
+     
+      run: ./gradlew build 
+        
+    - name: Upload Test Results (JUnit Format)
+      uses: actions/upload-artifact@v4
+      if: always() 
+      with:
+        name: junit-test-results
+  
+        path: build/test-results/test/*.xml 
